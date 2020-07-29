@@ -16,6 +16,7 @@ import TrackPlayer, {
   usePlaybackState,
   TrackPlayerEvents,
   STATE_PLAYING,
+  Event,
 } from 'react-native-track-player';
 
 import songs from './data';
@@ -34,7 +35,10 @@ export default function PlayerScreen() {
 
   const slider = useRef(null);
   const isPlayerReady = useRef(false);
+
   const [songIndex, setSongIndex] = useState(0);
+  const [index, setIndex] = useState(0);
+  const isItFromUser = useRef(false);
 
   // for tranlating the album art
   const position = useRef(Animated.divide(scrollX, width)).current;
@@ -69,6 +73,13 @@ export default function PlayerScreen() {
           Capability.SkipToPrevious,
         ],
       });
+      //add listener on track change
+      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, (e) => {
+        console.log('song ended', +e.track++);
+        // isPlayerReady.current = false;
+        // setIndex(+e.track++);
+        // isPlayerReady.current = true;
+      });
     });
 
     return () => {
@@ -83,11 +94,12 @@ export default function PlayerScreen() {
   useEffect(() => {
     if (isPlayerReady.current) {
       TrackPlayer.skip(songs[songIndex].id)
-        .then((e) => {
+        .then((_) => {
           console.log('changed track');
         })
         .catch((e) => console.log('error in changing track ', e));
     }
+    setIndex(songIndex);
   }, [songIndex]);
 
   const exitPlayer = async () => {
@@ -107,10 +119,6 @@ export default function PlayerScreen() {
     slider.current.scrollToOffset({
       offset: (songIndex - 1) * width,
     });
-  };
-
-  const playPause = () => {
-    // setIsPlaying();
   };
 
   const renderItem = ({index, item}) => {
@@ -155,13 +163,13 @@ export default function PlayerScreen() {
         />
       </SafeAreaView>
       <View>
-        <Text style={styles.title}>{songs[songIndex].title}</Text>
-        <Text style={styles.artist}>{songs[songIndex].artist}</Text>
+        <Text style={styles.title}>{songs[index].title}</Text>
+        <Text style={styles.artist}>{songs[index].artist}</Text>
       </View>
 
       <SliderComp />
 
-      <Controller onPlayPause={playPause} onNext={goNext} onPrv={goPrv} />
+      <Controller onNext={goNext} onPrv={goPrv} />
     </SafeAreaView>
   );
 }

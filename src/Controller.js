@@ -11,6 +11,8 @@ import TrackPlayer, {
   useTrackPlayerEvents,
   Event,
 } from 'react-native-track-player';
+
+
 export default function Controller({onNext, onPrv}) {
   const playbackState = usePlaybackState();
   const isPlaying = useRef('paused'); //paused play loading
