@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, {useRef, useEffect, useState} from 'react';
 import {
   View,
   SafeAreaView,
@@ -8,7 +8,7 @@ import {
   Dimensions,
   Animated,
   StyleSheet,
-} from "react-native";
+} from 'react-native';
 
 import TrackPlayer, {
   Capability,
@@ -16,40 +16,36 @@ import TrackPlayer, {
   usePlaybackState,
   TrackPlayerEvents,
   STATE_PLAYING,
-} from "react-native-track-player";
+} from 'react-native-track-player';
 
-import songs from "./data";
-import Controller from "./Controller";
-import SliderComp from "./SliderComp";
+import songs from './data';
+import Controller from './Controller';
+import SliderComp from './SliderComp';
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get('window');
 
-const events = [
-  TrackPlayerEvents.PLAYBACK_STATE,
-  TrackPlayerEvents.PLAYBACK_ERROR
-];
+// const events = [
+//   TrackPlayerEvents.PLAYBACK_STATE,
+//   TrackPlayerEvents.PLAYBACK_ERROR
+// ];
 
 export default function PlayerScreen() {
   const scrollX = useRef(new Animated.Value(0)).current;
 
   const slider = useRef(null);
-  const mPlayer = useRef(null);
+  const isPlayerReady = useRef(false);
   const [songIndex, setSongIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const [playerState, setState] = useState(null);
-  const playbackState = usePlaybackState();
 
   // for tranlating the album art
   const position = useRef(Animated.divide(scrollX, width)).current;
-
+  const playbackState = usePlaybackState();
 
   useEffect(() => {
     // position.addListener(({ value }) => {
     //   console.log(value);
     // });
 
-    scrollX.addListener(({ value }) => {
+    scrollX.addListener(({value}) => {
       const val = Math.round(value / width);
 
       setSongIndex(val);
@@ -57,59 +53,52 @@ export default function PlayerScreen() {
 
     TrackPlayer.setupPlayer().then(async () => {
       // The player is ready to be used
-      console.log("Player ready");
+      console.log('Player ready');
       // add the array of songs in the playlist
 
       await TrackPlayer.add(songs);
       TrackPlayer.play();
+      isPlayerReady.current = true;
+
 
       await TrackPlayer.updateOptions({
+        stopWithApp: false,
         capabilities: [
           Capability.Play,
           Capability.Pause,
           Capability.SkipToNext,
           Capability.SkipToPrevious,
         ],
+        
       });
     });
 
     return () => {
       scrollX.removeAllListeners();
-      // TrackPlayer.destroy();
+      TrackPlayer.destroy();
 
       exitPlayer();
     };
   }, []);
 
-  useEffect(() => {
-    console.log("playback state ", playbackState);
-  }, [playbackState]);
-
   // change the song when index changes
   useEffect(() => {
-    if (playbackState !== "idle") {
+    if (isPlayerReady.current) {
       TrackPlayer.skip(songs[songIndex].id)
         .then((e) => {
-          console.log("changed track");
+          console.log('changed track');
         })
-        .catch((e) => console.log(e));
+        .catch((e) => console.log('error in changing track ', e));
     }
   }, [songIndex]);
 
-  useTrackPlayerEvents(events, (event) => {
-    if (event.type === TrackPlayerEvents.PLAYBACK_ERROR) {
-      console.warn("An error occurred while playing the current track.");
-    }
-    if (event.type === TrackPlayerEvents.PLAYBACK_STATE) {
-      setState(playbackState);
-    }
-  });
+
 
   const exitPlayer = async () => {
     try {
       await TrackPlayer.stop();
     } catch (error) {
-      console.error("exitPlayer", error);
+      console.error('exitPlayer', error);
     }
   };
 
@@ -128,25 +117,24 @@ export default function PlayerScreen() {
     // setIsPlaying();
   };
 
-  const renderItem = ({ index, item }) => {
+  const renderItem = ({index, item}) => {
     return (
       <Animated.View
         style={{
-          alignItems: "center",
+          alignItems: 'center',
           width: width,
           transform: [
             {
               translateX: Animated.multiply(
                 Animated.add(position, -index),
-                -100
+                -100,
               ),
             },
           ],
-        }}
-      >
+        }}>
         <Animated.Image
           source={item.artwork}
-          style={{ width: 320, height: 320, borderRadius: 5 }}
+          style={{width: 320, height: 320, borderRadius: 5}}
         />
       </Animated.View>
     );
@@ -154,7 +142,7 @@ export default function PlayerScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={{ height: 320 }}>
+      <SafeAreaView style={{height: 320}}>
         <Animated.FlatList
           ref={slider}
           horizontal
@@ -165,8 +153,8 @@ export default function PlayerScreen() {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: true }
+            [{nativeEvent: {contentOffset: {x: scrollX}}}],
+            {useNativeDriver: true},
           )}
         />
       </SafeAreaView>
@@ -176,17 +164,14 @@ export default function PlayerScreen() {
       </View>
 
       {/* <SliderComp
-        mPlayer={mPlayer}
-        isPlaying={isPlaying}
         songIndex={songIndex}
-      />
+      /> */}
 
       <Controller
-        isPlaying={isPlaying}
         onPlayPause={playPause}
         onNext={goNext}
         onPrv={goPrv}
-      /> */}
+      />
     </SafeAreaView>
   );
 }
@@ -194,20 +179,20 @@ export default function PlayerScreen() {
 const styles = StyleSheet.create({
   title: {
     fontSize: 28,
-    textAlign: "center",
-    fontWeight: "600",
-    textTransform: "capitalize",
-    color: "#ffffff",
+    textAlign: 'center',
+    fontWeight: '600',
+    textTransform: 'capitalize',
+    color: '#ffffff',
   },
   artist: {
     fontSize: 18,
-    textAlign: "center",
-    color: "#ffffff",
-    textTransform: "capitalize",
+    textAlign: 'center',
+    color: '#ffffff',
+    textTransform: 'capitalize',
   },
   container: {
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
     height: height,
     maxHeight: 600,
   },

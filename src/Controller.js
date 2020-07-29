@@ -1,18 +1,46 @@
-import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, {useEffect, useState, useRef} from 'react';
+import {View, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import TrackPlayer, {
+  usePlaybackState,
+  useTrackPlayerEvents,
+  Event,
+} from 'react-native-track-player';
+export default function Controller({onNext, onPrv, isPlaying}) {
+  const playbackState = usePlaybackState();
+  const isPlaying = useRef('paused'); //paused play loading
 
-export default function Controller({ onNext, onPrv, onPlayPause, isPlaying }) {
+  useEffect(() => {
+    console.log('Player State', playbackState);
+    
+  }, [playbackState]);
+
+  const returnPlayBtn = () => {
+    if (playbackState === 'playing' || playbackState === 3) {
+      return <Icon color="#fff" name="pause" size={45} />;
+    } else {
+      return <ActivityIndicator/>
+    }
+  };
+
+  const onPlayPause = () => {
+    if (isPlaying.current === "playing") {
+      TrackPlayer.pause()
+    } else {
+      
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onPrv}>
-        <MaterialIcons color="#fff" name="skip-previous" size={45} />
+        <Icon color="#fff" name="skip-previous" size={45} />
       </TouchableOpacity>
       <TouchableOpacity onPress={onPlayPause}>
-        <MaterialIcons color="#fff" name={isPlaying ? "pause" : "play-arrow"} size={45} />
+        {returnPlayBtn()}
       </TouchableOpacity>
       <TouchableOpacity onPress={onNext}>
-        <MaterialIcons color="#fff" name="skip-next" size={45} />
+        <Icon color="#fff" name="skip-next" size={45} />
       </TouchableOpacity>
     </View>
   );
@@ -20,8 +48,8 @@ export default function Controller({ onNext, onPrv, onPlayPause, isPlaying }) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: 250
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: 250,
   },
 });
