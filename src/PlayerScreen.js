@@ -35,10 +35,11 @@ export default function PlayerScreen() {
 
   const slider = useRef(null);
   const isPlayerReady = useRef(false);
+  const index = useRef(0);
 
   const [songIndex, setSongIndex] = useState(0);
-  const [index, setIndex] = useState(0);
-  const isItFromUser = useRef(false);
+
+  const isItFromUser = useRef(true);
 
   // for tranlating the album art
   const position = useRef(Animated.divide(scrollX, width)).current;
@@ -74,10 +75,22 @@ export default function PlayerScreen() {
         ],
       });
       //add listener on track change
-      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, (e) => {
-        console.log('song ended', +e.track++);
-        // isPlayerReady.current = false;
-        // setIndex(+e.track++);
+      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
+        console.log('song ended', e);
+
+        const trackId = (await TrackPlayer.getCurrentTrack()) - 1; //get the current id
+
+        console.log('track id', trackId, 'index', index.current);
+
+        if (trackId !== index.current) {
+          setSongIndex(trackId);
+          isItFromUser.current = false;
+          goNext();
+          setTimeout(() => {
+            isItFromUser.current = true;
+          }, 200);
+        }
+
         // isPlayerReady.current = true;
       });
     });
@@ -92,14 +105,14 @@ export default function PlayerScreen() {
 
   // change the song when index changes
   useEffect(() => {
-    if (isPlayerReady.current) {
+    if (isPlayerReady.current && isItFromUser.current) {
       TrackPlayer.skip(songs[songIndex].id)
         .then((_) => {
           console.log('changed track');
         })
         .catch((e) => console.log('error in changing track ', e));
     }
-    setIndex(songIndex);
+    index.current = songIndex;
   }, [songIndex]);
 
   const exitPlayer = async () => {
@@ -110,15 +123,19 @@ export default function PlayerScreen() {
     }
   };
 
-  const goNext = () => {
+  const goNext = async () => {
     slider.current.scrollToOffset({
-      offset: (songIndex + 1) * width,
+      offset: (index.current + 1) * width,
     });
+
+    await TrackPlayer.play();
   };
-  const goPrv = () => {
+  const goPrv = async () => {
     slider.current.scrollToOffset({
-      offset: (songIndex - 1) * width,
+      offset: (index.current - 1) * width,
     });
+
+    await rTrackPlayer.play();
   };
 
   const renderItem = ({index, item}) => {
@@ -163,8 +180,8 @@ export default function PlayerScreen() {
         />
       </SafeAreaView>
       <View>
-        <Text style={styles.title}>{songs[index].title}</Text>
-        <Text style={styles.artist}>{songs[index].artist}</Text>
+        <Text style={styles.title}>{songs[songIndex].title}</Text>
+        <Text style={styles.artist}>{songs[songIndex].artist}</Text>
       </View>
 
       <SliderComp />

@@ -18,7 +18,9 @@ export default function Controller({onNext, onPrv}) {
   const isPlaying = useRef('paused'); //paused play loading
 
   useEffect(() => {
-    console.log('Player State', playbackState);
+    // console.log('Player State', playbackState);
+
+    //set the player state 
     if (playbackState === 'playing' || playbackState === 3) {
       isPlaying.current = 'playing';
     } else if (playbackState === 'paused' || playbackState === 2) {
