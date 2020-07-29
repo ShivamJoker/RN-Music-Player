@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import PlayerScreen from './src/PlayerScreen';
 
 export default function App() {
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#030303"/>
       <PlayerScreen/>
     </View>
   );
@@ -13,7 +14,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1F1B24',
+    backgroundColor: '#030303',
     // alignItems: 'center',
     justifyContent: 'center',
   },

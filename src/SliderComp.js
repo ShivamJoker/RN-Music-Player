@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Slider from "@react-native-community/slider";
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import Slider from '@react-native-community/slider';
 
-import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+import TrackPlayer, {useProgress} from 'react-native-track-player';
 
-
-export default function SliderComp({ mPlayer, isPlaying, songIndex }) {
-  const [currentTime, setCurrentTime] = useState(0);
-
-  
+export default function SliderComp() {
+  const {position, duration} = useProgress();
 
   const formatTime = (secs) => {
     let minutes = Math.floor(secs / 60);
@@ -20,29 +17,25 @@ export default function SliderComp({ mPlayer, isPlaying, songIndex }) {
   };
 
   const handleChange = (val) => {
-    // console.log(event);
-    
+    TrackPlayer.seekTo(val);
   };
 
-  useEffect(() => {
-
-
-  //components 
+  //components
   return (
     <View style={styles.container}>
       <Slider
-        style={{ width: 320, height: 40 }}
+        style={{width: 320, height: 40}}
         minimumValue={0}
-        value={currentTime}
-        maximumValue={getDuration()}
+        value={position}
+        maximumValue={duration}
         minimumTrackTintColor="#ffffff"
         onSlidingComplete={handleChange}
         maximumTrackTintColor="rgba(255, 255, 255, .5)"
         thumbTintColor="#fff"
       />
       <View style={styles.timeContainer}>
-        <Text style={styles.timers}>{formatTime(currentTime)}</Text>
-        <Text style={styles.timers}>{formatTime(getDuration())}</Text>
+        <Text style={styles.timers}>{formatTime(position)}</Text>
+        <Text style={styles.timers}>{formatTime(duration)}</Text>
       </View>
     </View>
   );
@@ -53,11 +46,11 @@ const styles = StyleSheet.create({
     height: 70,
   },
   timers: {
-    color: "#fff",
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
   },
   timeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

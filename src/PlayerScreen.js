@@ -75,7 +75,7 @@ export default function PlayerScreen() {
       scrollX.removeAllListeners();
       TrackPlayer.destroy();
 
-      exitPlayer();
+      // exitPlayer();
     };
   }, []);
 
