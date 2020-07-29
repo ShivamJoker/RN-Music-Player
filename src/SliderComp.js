@@ -2,17 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
 
+import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+
+
 export default function SliderComp({ mPlayer, isPlaying, songIndex }) {
   const [currentTime, setCurrentTime] = useState(0);
 
-  // console.log(mPlayer);
-  const getDuration = () => {
-    if (mPlayer.current) {
-      return mPlayer.current.duration / 1000;
-    } else {
-      return 0;
-    }
-  };
+  
 
   const formatTime = (secs) => {
     let minutes = Math.floor(secs / 60);
@@ -25,32 +21,10 @@ export default function SliderComp({ mPlayer, isPlaying, songIndex }) {
 
   const handleChange = (val) => {
     // console.log(event);
-    mPlayer.current.seek(val*1000)
     
   };
 
   useEffect(() => {
-    //update the timer every 1 sec
-    const updateCurrentTime = () => {
-      if (!mPlayer.current) return
-      const curTime = Math.round(mPlayer.current.currentTime / 1000) //convert in ms
-      setCurrentTime(curTime);
-      console.log("current time", (curTime));
-    };
-
-    setCurrentTime(0)
-    updateCurrentTime();
-
-    let timer;
-    if (isPlaying) {
-      timer = setInterval(updateCurrentTime, 1000);
-    } else {
-      clearInterval(timer);
-    }
-    return () => {
-      clearInterval(timer);
-    };
-  }, [isPlaying, songIndex]);
 
 
   //components 

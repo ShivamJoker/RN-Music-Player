@@ -60,7 +60,6 @@ export default function PlayerScreen() {
       TrackPlayer.play();
       isPlayerReady.current = true;
 
-
       await TrackPlayer.updateOptions({
         stopWithApp: false,
         capabilities: [
@@ -69,7 +68,6 @@ export default function PlayerScreen() {
           Capability.SkipToNext,
           Capability.SkipToPrevious,
         ],
-        
       });
     });
 
@@ -91,8 +89,6 @@ export default function PlayerScreen() {
         .catch((e) => console.log('error in changing track ', e));
     }
   }, [songIndex]);
-
-
 
   const exitPlayer = async () => {
     try {
@@ -163,15 +159,9 @@ export default function PlayerScreen() {
         <Text style={styles.artist}>{songs[songIndex].artist}</Text>
       </View>
 
-      {/* <SliderComp
-        songIndex={songIndex}
-      /> */}
+      <SliderComp />
 
-      <Controller
-        onPlayPause={playPause}
-        onNext={goNext}
-        onPrv={goPrv}
-      />
+      <Controller onPlayPause={playPause} onNext={goNext} onPrv={goPrv} />
     </SafeAreaView>
   );
 }
