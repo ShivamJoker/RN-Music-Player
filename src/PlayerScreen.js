@@ -60,13 +60,14 @@ export default function PlayerScreen() {
       // The player is ready to be used
       console.log('Player ready');
       // add the array of songs in the playlist
-
+      await TrackPlayer.reset();
       await TrackPlayer.add(songs);
       TrackPlayer.play();
       isPlayerReady.current = true;
 
       await TrackPlayer.updateOptions({
         stopWithApp: false,
+        alwaysPauseOnInterruption: true,
         capabilities: [
           Capability.Play,
           Capability.Pause,
@@ -85,13 +86,29 @@ export default function PlayerScreen() {
         if (trackId !== index.current) {
           setSongIndex(trackId);
           isItFromUser.current = false;
-          goNext();
+
+          if (trackId > index.current) {
+            goNext();
+          } else {
+            goPrv();
+          }
           setTimeout(() => {
             isItFromUser.current = true;
           }, 200);
         }
 
         // isPlayerReady.current = true;
+      });
+
+      //monitor intterupt when other apps start playing music
+      TrackPlayer.addEventListener(Event.RemoteDuck, (e) => {
+        console.log(e);
+        // if permanent then stop it
+        if (e.permanent) {
+          
+        } else {
+          
+        }
       });
     });
 
@@ -135,7 +152,7 @@ export default function PlayerScreen() {
       offset: (index.current - 1) * width,
     });
 
-    await rTrackPlayer.play();
+    await TrackPlayer.play();
   };
 
   const renderItem = ({index, item}) => {
