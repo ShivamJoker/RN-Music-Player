@@ -102,12 +102,12 @@ export default function PlayerScreen() {
 
       //monitor intterupt when other apps start playing music
       TrackPlayer.addEventListener(Event.RemoteDuck, (e) => {
-        console.log(e);
-        // if permanent then stop it
-        if (e.permanent) {
-          
+        // console.log(e);
+        if (e.paused) {
+          // if pause true we need to pause the music
+          TrackPlayer.pause();
         } else {
-          
+          TrackPlayer.play();
         }
       });
     });
