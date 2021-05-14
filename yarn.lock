@@ -5415,10 +5415,10 @@ react-native-swift@^1.2.3:
     "@raydeck/xcode" "^2.2.0"
     glob "^7.1.2"
 
-react-native-track-player@^2.0.0-rc13:
-  version "2.0.0-rc9"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-2.0.0-rc9.tgz#ac2036bcb8844d1e05b9367849abd0c90c6e11ea"
-  integrity sha512-NAQyvAuU86VGPR45VFZLpsigNaxWZOAyigs7BxJfO8gknX22o/4408o2KDi+BbewsjL09g/Z52yg90KIhsj0PQ==
+react-native-track-player@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.7.tgz#a721662fc32383cf2979a48b33db091140e88962"
+  integrity sha512-U1kA25qm398/kY6BvTojGHt4S1tYuKrJNQpXW+dA+p0B+n4LlPyoidUXfu951YM7aoisg8EmQPsevUFmcXG+cg==
 
 react-native-vector-icons@^7.0.0:
   version "7.1.0"

@@ -22,6 +22,7 @@ import TrackPlayer, {
 import songs from './data';
 import Controller from './Controller';
 import SliderComp from './SliderComp';
+import {PLAYBACK_TRACK_CHANGED} from 'react-native-track-player/lib/eventTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -29,6 +30,24 @@ const {width, height} = Dimensions.get('window');
 //   TrackPlayerEvents.PLAYBACK_STATE,
 //   TrackPlayerEvents.PLAYBACK_ERROR
 // ];
+
+const TRACK_PLAYER_CONTROLS_OPTS = {
+  stopWithApp: false,
+  alwaysPauseOnInterruption: true,
+  capabilities: [
+    TrackPlayer.CAPABILITY_PLAY,
+    TrackPlayer.CAPABILITY_PAUSE,
+    TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+    TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+    TrackPlayer.CAPABILITY_SEEK_TO,
+  ],
+  compactCapabilities: [
+    TrackPlayer.CAPABILITY_PLAY,
+    TrackPlayer.CAPABILITY_PAUSE,
+    TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+    TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+  ],
+};
 
 export default function PlayerScreen() {
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -62,22 +81,13 @@ export default function PlayerScreen() {
       // add the array of songs in the playlist
       await TrackPlayer.reset();
       await TrackPlayer.add(songs);
-      await TrackPlayer.play();
+      TrackPlayer.play();
       isPlayerReady.current = true;
 
-      await TrackPlayer.updateOptions({
-        stopWithApp: false,
-        alwaysPauseOnInterruption: true,
-        capabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.SkipToNext,
-          Capability.SkipToPrevious,
-        ],
-      });
+      await TrackPlayer.updateOptions(TRACK_PLAYER_CONTROLS_OPTS);
 
       //add listener on track change
-      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async e => {
+      TrackPlayer.addEventListener(PLAYBACK_TRACK_CHANGED, async e => {
         console.log('song ended', e);
 
         const trackId = (await TrackPlayer.getCurrentTrack()) - 1; //get the current id
@@ -101,8 +111,8 @@ export default function PlayerScreen() {
         // isPlayerReady.current = true;
       });
 
-      //monitor intterupt when other apps start playing music
-      TrackPlayer.addEventListener(Event.RemoteDuck, e => {
+      // monitor intterupt when other apps start playing music
+      TrackPlayer.addEventListener(TrackPlayerEvents.REMOTE_DUCK, e => {
         // console.log(e);
         if (e.paused) {
           // if pause true we need to pause the music
@@ -132,14 +142,6 @@ export default function PlayerScreen() {
     }
     index.current = songIndex;
   }, [songIndex]);
-
-  const exitPlayer = async () => {
-    try {
-      await TrackPlayer.stop();
-    } catch (error) {
-      console.error('exitPlayer', error);
-    }
-  };
 
   const goNext = async () => {
     slider.current.scrollToOffset({
