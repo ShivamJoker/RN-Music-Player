@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import {StyleSheet, View, StatusBar} from 'react-native';
 import PlayerScreen from './src/PlayerScreen';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#030303"/>
-      <PlayerScreen/>
+      <StatusBar barStyle="light-content" backgroundColor="#030303" />
+      <PlayerScreen />
     </View>
   );
 }

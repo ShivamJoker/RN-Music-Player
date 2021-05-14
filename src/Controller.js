@@ -12,21 +12,20 @@ import TrackPlayer, {
   Event,
 } from 'react-native-track-player';
 
-
 export default function Controller({onNext, onPrv}) {
   const playbackState = usePlaybackState();
   const isPlaying = useRef('paused'); //paused play loading
 
   useEffect(() => {
-    // console.log('Player State', playbackState);
+    console.log('Player State', playbackState);
 
-    //set the player state 
+    //set the player state
     if (playbackState === 'playing' || playbackState === 3) {
       isPlaying.current = 'playing';
     } else if (playbackState === 'paused' || playbackState === 2) {
       isPlaying.current = 'paused';
     } else {
-      isPlaying.current = 'loading'
+      isPlaying.current = 'loading';
     }
   }, [playbackState]);
 
@@ -37,7 +36,7 @@ export default function Controller({onNext, onPrv}) {
       case 'paused':
         return <Icon color="#fff" name="play-arrow" size={45} />;
       default:
-        return <ActivityIndicator size={45} color="#fff"/>;
+        return <ActivityIndicator size={45} color="#fff" />;
     }
   };
 

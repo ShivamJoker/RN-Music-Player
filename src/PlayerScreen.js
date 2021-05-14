@@ -62,7 +62,7 @@ export default function PlayerScreen() {
       // add the array of songs in the playlist
       await TrackPlayer.reset();
       await TrackPlayer.add(songs);
-      TrackPlayer.play();
+      await TrackPlayer.play();
       isPlayerReady.current = true;
 
       await TrackPlayer.updateOptions({
@@ -75,8 +75,9 @@ export default function PlayerScreen() {
           Capability.SkipToPrevious,
         ],
       });
+
       //add listener on track change
-      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
+      TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async e => {
         console.log('song ended', e);
 
         const trackId = (await TrackPlayer.getCurrentTrack()) - 1; //get the current id
@@ -101,7 +102,7 @@ export default function PlayerScreen() {
       });
 
       //monitor intterupt when other apps start playing music
-      TrackPlayer.addEventListener(Event.RemoteDuck, (e) => {
+      TrackPlayer.addEventListener(Event.RemoteDuck, e => {
         // console.log(e);
         if (e.paused) {
           // if pause true we need to pause the music
@@ -124,10 +125,10 @@ export default function PlayerScreen() {
   useEffect(() => {
     if (isPlayerReady.current && isItFromUser.current) {
       TrackPlayer.skip(songs[songIndex].id)
-        .then((_) => {
+        .then(_ => {
           console.log('changed track');
         })
-        .catch((e) => console.log('error in changing track ', e));
+        .catch(e => console.log('error in changing track ', e));
     }
     index.current = songIndex;
   }, [songIndex]);
@@ -189,7 +190,7 @@ export default function PlayerScreen() {
           scrollEventThrottle={16}
           data={songs}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {x: scrollX}}}],
             {useNativeDriver: true},
