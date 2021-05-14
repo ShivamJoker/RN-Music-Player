@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Slider from '@react-native-community/slider';
-
-import TrackPlayer, {useProgress} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
+import {useTrackPlayerProgress} from 'react-native-track-player';
 
 export default function SliderComp() {
-  const {position, duration} = useProgress();
+  const {position, duration} = useTrackPlayerProgress(1000, null);
 
-  const formatTime = (secs) => {
+  const formatTime = secs => {
     let minutes = Math.floor(secs / 60);
     let seconds = Math.ceil(secs - minutes * 60);
 
@@ -16,7 +16,7 @@ export default function SliderComp() {
     return `${minutes}:${seconds}`;
   };
 
-  const handleChange = (val) => {
+  const handleChange = val => {
     TrackPlayer.seekTo(val);
   };
 
