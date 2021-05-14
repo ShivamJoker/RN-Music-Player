@@ -32,6 +32,7 @@ const {width, height} = Dimensions.get('window');
 // ];
 
 const TRACK_PLAYER_CONTROLS_OPTS = {
+  waitforBuffer: true,
   stopWithApp: false,
   alwaysPauseOnInterruption: true,
   capabilities: [
@@ -129,7 +130,7 @@ export default function PlayerScreen() {
 
       // exitPlayer();
     };
-  }, []);
+  }, [scrollX]);
 
   // change the song when index changes
   useEffect(() => {
